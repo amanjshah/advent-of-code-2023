@@ -1,6 +1,6 @@
 import os
 
-#Monstrous
+# Monstrous
 day5 = open(os.path.join("input-data-2023", "23-5.txt"))
 
 
