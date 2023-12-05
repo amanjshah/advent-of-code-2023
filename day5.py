@@ -1,5 +1,6 @@
 import os
 
+#Monstrous
 day5 = open(os.path.join("input-data-2023", "23-5.txt"))
 
 
@@ -23,7 +24,7 @@ def getBlocks(data):
 
 def getLocations(ranges, blocks):
     for block in blocks:
-        # store ranges introduced by this block
+        # store ranges introduced by mappings in this block separately to the ranges that were previously present
         # these must be mapped by ranges they overlap with in subsequent blocks, but not in this block
         newRanges = []
         updateRangesForBlock(block, ranges, newRanges)
