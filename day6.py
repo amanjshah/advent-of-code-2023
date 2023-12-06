@@ -6,21 +6,22 @@ def getValues():
     return (int(''.join(char for char in day6[i] if char.isdigit())) for i in range(2))
 
 
-def firstBeatingButtonDuration(time, distanceToBeat):
+def firstWinningButtonDuration(time, distanceToBeat):
     # binary search
     left, right = 1, time-1
     while left < right:
-        speed = left + (right - left) // 2
-        if distanceToBeat < speed*(time-speed):
-            right = speed
+        charge = left + (right - left) // 2
+        if distanceToBeat < charge*(time-charge):
+            right = charge
         else:
-            left = speed + 1
+            left = charge + 1
     return left
 
 
 def getResult():
     time, distanceToBeat = getValues()
-    return time - 2*firstBeatingButtonDuration(time, distanceToBeat) + 1
+    print(firstWinningButtonDuration(time, distanceToBeat))
+    return time - 2*firstWinningButtonDuration(time, distanceToBeat) + 1
 
 
 print(getResult())
