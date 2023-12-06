@@ -1,3 +1,11 @@
 
 H
 input-data-2023/23-4.txt,a/0/a0eda34beee0c50ef882c0cc98c39f00598fe359
+7
+day4.py,a/4/a49af8ebe3949c4019e24e9e0f23171b72776c4d
+7
+day2.py,1/6/16df83749a16f9b1f196c9e1a65e9f564a4b6a30
+7
+day1.py,5/f/5fb25921df21ccf5a1fd541b047b8c93d35a6ab3
+7
+day3.py,f/a/fa2e3f7f7071af0336f0951a08aa5c15386c28d5
