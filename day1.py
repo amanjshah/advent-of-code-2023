@@ -1,9 +1,7 @@
 import os
 
-day1 = open(os.path.join("input-data-2023", "23-1.txt"))
 
-
-def generateWordDigits():
+def categoriseByWordLength():
     wordDigits = {}
     for digit in ("one", "two", "three", "four", "five", "six", "seven", "eight", "nine"):
         charCount = len(digit)
@@ -14,44 +12,35 @@ def generateWordDigits():
     return wordDigits
 
 
-wordDigits = generateWordDigits()
-digits = {"one": "1", "two": "2", "three": "3", "four": "4", "five": "5", "six": "6", "seven": "7", "eight": "8",
-          "nine": "9"}
+DIGITS_OF_SIZE = categoriseByWordLength()
+WORD_TO_DIGIT = {"one": "1", "two": "2", "three": "3",
+                 "four": "4", "five": "5", "six": "6",
+                 "seven": "7", "eight": "8", "nine": "9"}
 
 
-def getDigit(line, i, ):
-    if line[i].isdigit(): return line[i]
+def getDigit(line, i):
+    if line[i].isdigit():
+        return line[i]
     for wordSize in (3, 4, 5):
-        if i <= len(line) - wordSize and line[i:i + wordSize] in wordDigits[wordSize]: return digits[
-            line[i:i + wordSize]]
-    return None
+        if i <= len(line) - wordSize and line[i:i + wordSize] in DIGITS_OF_SIZE[wordSize]:
+            return WORD_TO_DIGIT[line[i:i + wordSize]]
 
 
 def getCalibrationValue(line):
-    firstDigitIdx = 0
-
-    firstDigit = None
-    for i in range(len(line)):
-        firstDigit = getDigit(line, i)
-        if not firstDigit: continue
-        firstDigitIdx = i
-        break
-
-    secondDigit = firstDigit
-    for i in range(firstDigitIdx + 1, len(line)):
-        previousSecondDigit = secondDigit
-        nextDigit = getDigit(line, i)
-        secondDigit = nextDigit if nextDigit else secondDigit
-        if secondDigit == previousSecondDigit: continue
-
+    firstDigit, firstDigitIdx = getToDigit(line, 0, len(line), 1)
+    secondDigit, _ = getToDigit(line, len(line) - 1, firstDigitIdx - 1, -1)
     return int(firstDigit + secondDigit)
 
 
-def getResult(dayOneFile):
-    res = 0
-    for line in dayOneFile:
-        res += getCalibrationValue(line)
-    return res
+def getToDigit(line, start, stop, increment):
+    for i in range(start, stop, increment):
+        digit = getDigit(line, i)
+        if digit:
+            return digit, i
 
 
-print(getResult(day1))
+def getResult():
+    return sum(getCalibrationValue(line) for line in open(os.path.join("input-data-2023", "23-1.txt")))
+
+
+print(getResult())

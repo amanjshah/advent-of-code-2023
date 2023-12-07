@@ -63,8 +63,7 @@ def getTypeForHand(counts):
 def getPriorityQueues(hands):
     types = {handType: [] for handType in Type}
     for hand, bid in hands:
-        handType = getTypeForHand(Counter(hand))
-        heappush(types[handType], Node(hand, bid))
+        heappush(types[getTypeForHand(Counter(hand))], Node(hand, bid))
     return types
 
 
@@ -73,8 +72,7 @@ def calculateWinnings(types):
     for handType in Type:
         nodes = types[handType]
         while nodes:
-            node = heappop(nodes)
-            winnings += int(node.bid) * rank
+            winnings += int(heappop(nodes).bid) * rank
             rank += 1
     return winnings
 

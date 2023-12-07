@@ -1,17 +1,15 @@
 import math
 import os
 
-day2 = open(os.path.join("input-data-2023", "23-2.txt"))
 
-
-def getResult(dayTwoFile):
-    return sum(getPowerOfSet(line) for line in dayTwoFile)
+def getResult():
+    return sum(getPowerOfSet(line) for line in open(os.path.join("input-data-2023", "23-2.txt")))
 
 
 def getPowerOfSet(line):
-    game = line.split(":")[1].strip().split("; ")
     minimumNumbers = {"red": 0, "green": 0, "blue": 0}
-    for gameSet in game: adjustMinimumNumbersForSet(minimumNumbers, gameSet)
+    for gameSet in line.split(":")[1].strip().split("; "):
+        adjustMinimumNumbersForSet(minimumNumbers, gameSet)
     return math.prod(minimumNumbers.values())
 
 
@@ -22,4 +20,4 @@ def adjustMinimumNumbersForSet(minimumNumbers, gameSet):
         minimumNumbers[colour] = max(int(number), minimumNumbers[colour])
 
 
-print(getResult(day2))
+print(getResult())

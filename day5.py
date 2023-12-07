@@ -1,8 +1,5 @@
 import os
 
-# Monstrous
-day5 = open(os.path.join("input-data-2023", "23-5.txt"))
-
 
 def getSeeds(data):
     nums = list(map(int, data[0].strip().split(": ")[1].split()))
@@ -24,15 +21,14 @@ def getBlocks(data):
 
 def getLocations(ranges, blocks):
     for block in blocks:
-        # store ranges introduced by mappings in this block separately to the ranges that were previously present
-        # these must be mapped by ranges they overlap with in subsequent blocks, but not in this block
-        newRanges = []
-        updateRangesForBlock(block, ranges, newRanges)
-        ranges = newRanges
+        ranges = updateRangesForBlock(block, ranges)
     return ranges
 
 
-def updateRangesForBlock(block, ranges, newRanges):
+def updateRangesForBlock(block, ranges):
+    # store ranges introduced by mappings in current block separately from ranges that were previously present
+    # these must be mapped by ranges they overlap with in subsequent blocks, but not in this block
+    newRanges = []
     while ranges:
         start, end = ranges.pop()
         for srcStart, srcEnd, mapping in block:
@@ -48,13 +44,13 @@ def updateRangesForBlock(block, ranges, newRanges):
                 break
         else:
             newRanges.append((start, end))
+    return newRanges
 
 
-def getResult(dayFiveData):
-    data = [line.strip() for line in dayFiveData]
-    blocks = getBlocks(data)
-    seeds = getSeeds(data)
-    return min(getLocations(seeds, blocks))[0]
+def getResult():
+    data = [line.strip() for line in open(os.path.join("input-data-2023", "23-5.txt"))]
+    return min(getLocations(getSeeds(data), getBlocks(data)))[0]
 
 
-print(getResult(day5))
+print(getResult())
+# Monstrous
