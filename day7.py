@@ -1,5 +1,5 @@
 import os
-import heapq
+from heapq import heappush, heappop
 from collections import Counter
 
 
@@ -12,19 +12,15 @@ class Node:
 
     def __lt__(self, other):
         for i in range(5):
-            if self.hand[i] == other.hand[i]:
-                continue
-            if self.hand[i] == "J":
-                return True
-            if other.hand[i] == "J":
-                return False
-            if self.hand[i].isdigit() and other.hand[i].isdigit():
-                return self.hand[i] < other.hand[i]
-            if self.hand[i].isdigit() and not other.hand[i].isdigit():
-                return True
-            if other.hand[i].isdigit() and not self.hand[i].isdigit():
-                return False
-            return self.order[self.hand[i]] < self.order[other.hand[i]]
+            selfChar, otherChar = self.hand[i], other.hand[i]
+            if selfChar != otherChar:
+                if selfChar == "J" or (selfChar.isdigit() and not otherChar.isdigit() and otherChar != "J"):
+                    return True
+                if otherChar == "J" or (otherChar.isdigit() and not selfChar.isdigit()):
+                    return False
+                if selfChar.isdigit() and otherChar.isdigit():
+                    return self.hand[i] < other.hand[i]
+                return self.order[selfChar] < self.order[otherChar]
         return True
 
 
@@ -39,26 +35,26 @@ def getNodeData(hand, bid):
 
 def pushNodeToHeap(counts, node, numOfUniqueCards, types):
     if numOfUniqueCards == 5:
-        heapq.heappush(types["one"], node) if "J" in counts else heapq.heappush(types["high"], node)
+        heappush(types["one"], node) if "J" in counts else heappush(types["high"], node)
     elif numOfUniqueCards == 4:
-        heapq.heappush(types["three"], node) if "J" in counts else heapq.heappush(types["one"], node)
+        heappush(types["three"], node) if "J" in counts else heappush(types["one"], node)
     elif numOfUniqueCards == 3:
         if 3 in counts.values():
-            heapq.heappush(types["four"], node) if "J" in counts else heapq.heappush(types["three"], node)
+            heappush(types["four"], node) if "J" in counts else heappush(types["three"], node)
         else:
             if counts["J"] == 2:
-                heapq.heappush(types["four"], node)
+                heappush(types["four"], node)
             elif counts["J"] == 1:
-                heapq.heappush(types["full"], node)
+                heappush(types["full"], node)
             else:
-                heapq.heappush(types["two"], node)
+                heappush(types["two"], node)
     elif numOfUniqueCards == 2:
         if "J" in counts:
-            heapq.heappush(types["five"], node)
+            heappush(types["five"], node)
         else:
-            heapq.heappush(types["four"], node) if 4 in counts.values() else heapq.heappush(types["full"], node)
+            heappush(types["four"], node) if 4 in counts.values() else heappush(types["full"], node)
     else:
-        heapq.heappush(types["five"], node)
+        heappush(types["five"], node)
     return types
 
 
@@ -75,7 +71,7 @@ def calculateWinnings(types):
     for handType in ("high", "one", "two", "three", "full", "four", "five"):
         nodes = types[handType]
         while nodes:
-            node = heapq.heappop(nodes)
+            node = heappop(nodes)
             winnings += int(node.bid) * rank
             rank += 1
     return winnings
