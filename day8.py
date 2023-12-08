@@ -20,9 +20,9 @@ def getSteps(node, sequence, mappings):
 
 def getResult():
     sequence, mappings, startingPoints = getData()
-    # Each starting point only hits one of the {X}{X}Z endpoints
-    # Next nodes for each endpoint are the next nodes for the corresponding starting point
-    # Therefore single cycle per starting point input, so use lcm
+    # Each starting point only hits one of the __Z endpoints
+    # Next nodes for each end point are same as next nodes for its corresponding starting point
+    # Therefore single cycle per starting point input, so number of steps til in sync is lcm
     return lcm(*map(lambda startingPoint: getSteps(startingPoint, sequence, mappings), startingPoints))
 
 
