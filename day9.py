@@ -2,8 +2,8 @@ import os
 
 
 def getSequences():
-    return [list(map(int, line.split())) for line in
-            open(os.path.join("input-data-2023", "23-9.txt")).read().strip().split("\n")]
+    return (list(map(int, line.split())) for line in
+            open(os.path.join("input-data-2023", "23-9.txt")).read().strip().split("\n"))
 
 
 def extrapolateSequence(sequence):
