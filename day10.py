@@ -61,7 +61,7 @@ def getNextPosition(directionTo, maze, i, j):
     return maze[i + di][j + dj], i + di, j + dj, opp
 
 
-def getFurthestNode(currentPoints, maze, seen):
+def getLoop(currentPoints, maze, seen):
     pipeDirections = {"-": "EW", "|": "NS", "L": "EN", "J": "WN", "F": "ES", "7": "WS"}
     iterations = 0
     while currentPoints:
@@ -110,7 +110,7 @@ def getResult():
     seen, (iStart, jStart) = [[False for _ in line] for line in maze], getStartingPoint(maze)
     seen[iStart][jStart] = True
     maze, initialPositions = getDataForTraversal(maze, iStart, jStart)
-    _, seen = getFurthestNode(initialPositions, maze, seen)
+    _, seen = getLoop(initialPositions, maze, seen)
     return getArea(maze, seen)
 
 
