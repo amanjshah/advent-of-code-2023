@@ -34,13 +34,10 @@ def updateGalaxyPositions(dataSize, galaxyPositions, emptyRows, emptyColumns):
 
 
 def getSumOfPaths(galaxyPositions):
-    res, seen = 0, set()
-    for i1, j1 in galaxyPositions:
-        for i2, j2 in galaxyPositions:
-            if (i1 == i2 and j1 == j2) or (i2, j2) in seen:
-                continue
+    res = 0
+    for galaxyPositionsIdx, (i1, j1) in enumerate(galaxyPositions):
+        for i2, j2 in galaxyPositions[galaxyPositionsIdx+1:]:
             res += abs(i2 - i1) + abs(j2 - j1)
-        seen.add((i1, j1))
     return res
 
 
