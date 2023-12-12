@@ -1,55 +1,31 @@
 import os
 
-day12 = [line.split() for line in open(os.path.join("input-data-2023", "23-12.txt")).read().strip().split("\n")]
-day12 = [(sequence, combos.split(",")) for (sequence, combos) in day12]
-res = 0
-for sequence, combos in day12:
-    sequenceLength, numOfCombos, stack, arrangements = len(sequence), len(combos), [], 0
-    # stack schema: (seqSoFar, nextSeqCharIdx, nextComboIdx, comboJustCaught)
-    stack.append(("", 0, 0, False))
-    while stack:
-        # pop stack to get next entry under consideration
-        seqSoFar, nextSeqCharIdx, nextComboIdx, comboJustCaught = stack.pop()
-        # if nextSeqCharIdx and nextComboIdx are both out of range, this is valid res so increment arrangements
-        if nextSeqCharIdx >= sequenceLength and nextComboIdx >= numOfCombos:
-            arrangements += 1
-            print(seqSoFar)
-        # if nextSeqCharIdx is out of range but nextComboIdx is not, this is an invalid res so continue
-        elif nextSeqCharIdx >= sequenceLength and nextComboIdx < numOfCombos:
-            continue
-        # if nextSeqCharIdx is not out of range but nextComboIdx is:
-        elif nextSeqCharIdx < sequenceLength and nextComboIdx >= numOfCombos:
-            # if next char is "#", this is invalid res so continue.
-            # otherwise add new stack entry with incremented nextSeqIdxChar & updated seqSoFar with "." and continue
-            if sequence[nextSeqCharIdx] != "#":
-                stack.append((seqSoFar + ".", nextSeqCharIdx + 1, nextComboIdx, False))
-        # if neither are out of range:
-        else:
-            # if next char is not "?", check if it remains possible that seqSoFar can produce current combo next.
-            if sequence[nextSeqCharIdx] != "?":
-                newChar = sequence[nextSeqCharIdx]
-                if newChar == ".":
-                    if (not seqSoFar) or (not ((not comboJustCaught) and (seqSoFar[-1] == "#"))):
-                        stack.append((seqSoFar + ".", nextSeqCharIdx + 1, nextComboIdx, False))
-                else:
-                    # check if new "#" interferes with previous combo - if so continue
-                    if comboJustCaught:
-                        continue
-                    # check if new "#" has done the job
-                    if len(seqSoFar + "#") >= int(combos[nextComboIdx]) and len(set((seqSoFar + "#")[-int(combos[nextComboIdx]):])) == 1:
-                        stack.append((seqSoFar + "#", nextSeqCharIdx + 1, nextComboIdx + 1, True))
-                    else:
-                        stack.append((seqSoFar + "#", nextSeqCharIdx + 1, nextComboIdx, False))
-            # otherwise add new entry for seqSoFar with ".", and check if # can still work and add this too if so.
-            else:
-                if (not seqSoFar) or (not ((not comboJustCaught) and (seqSoFar[-1] == "#"))):
-                    stack.append((seqSoFar + ".", nextSeqCharIdx + 1, nextComboIdx, False))
-                if comboJustCaught:
-                    continue
-                if len(seqSoFar + "#") >= int(combos[nextComboIdx]) and len(set((seqSoFar + "#")[-int(combos[nextComboIdx]):])) == 1:
-                    stack.append((seqSoFar + "#", nextSeqCharIdx + 1, nextComboIdx + 1, True))
-                else:
-                    stack.append((seqSoFar + "#", nextSeqCharIdx + 1, nextComboIdx, False))
-    res += arrangements
+cache = {}
 
-print(res)
+
+def count(remainingSequence, nums):
+    if (remainingSequence, nums) in cache:
+        return cache[(remainingSequence, nums)]
+    if not remainingSequence:
+        return 0 if nums else 1
+    if not nums:
+        return 0 if "#" in remainingSequence else 1
+    res, nextSymbol, nextNumber = 0, remainingSequence[0], nums[0]
+    if nextSymbol in "?.":
+        res += count(remainingSequence[1:], nums)
+    if nextSymbol in "?#":
+        if (nextNumber <= len(remainingSequence) and "." not in remainingSequence[:nextNumber]
+                and (nextNumber == len(remainingSequence) or remainingSequence[nextNumber] != "#")):
+            res += count(remainingSequence[nextNumber + 1:], nums[1:])
+    cache[(remainingSequence, nums)] = res
+    return res
+
+
+def getResult():
+    day12 = [line.split() for line in open(os.path.join("input-data-2023", "23-12.txt")).read().strip().split("\n")]
+    data = [("?".join([sequence] * 5), tuple(map(int, nums.split(",") * 5))) for (sequence, nums) in day12]
+    res = sum(map(lambda row: count(row[0], row[1]), data))
+    return res
+
+
+print(getResult())
