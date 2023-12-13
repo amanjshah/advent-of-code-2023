@@ -2,7 +2,7 @@ import os
 
 
 def checkForSmudge(foundSmudge, leftRow, rightRow):
-    if (not foundSmudge) and (sum(a != b for a, b in zip(leftRow, rightRow)) == 1):
+    if not foundSmudge and sum(a != b for a, b in zip(leftRow, rightRow)) == 1:
         leftRow = rightRow
         foundSmudge = True
     return foundSmudge, leftRow, rightRow
