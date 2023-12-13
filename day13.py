@@ -8,22 +8,21 @@ def checkForSmudge(foundSmudge, leftRow, rightRow):
     return foundSmudge, leftRow, rightRow
 
 
-def findMirror(rowNumber, table):
+def mirrorAfterRow(rowNumber, table):
     (foundSmudge, leftRow, rightRow), separation = checkForSmudge(False, table[rowNumber], table[rowNumber + 1]), 0
     while leftRow == rightRow:
         separation += 1
         if (rowNumber - separation) < 0 or (rowNumber + 1 + separation) >= len(table):
-            return rowNumber + 1 if foundSmudge else 0
+            return True if foundSmudge else False
         foundSmudge, leftRow, rightRow = checkForSmudge(foundSmudge, table[rowNumber - separation],
                                                         table[rowNumber + 1 + separation])
-    return 0
+    return False
 
 
 def getResForTable(table):
     for rowNumber in range(len(table) - 1):
-        leftOfMirror = findMirror(rowNumber, table)
-        if leftOfMirror:
-            return leftOfMirror
+        if mirrorAfterRow(rowNumber, table):
+            return rowNumber + 1
     return 0
 
 
