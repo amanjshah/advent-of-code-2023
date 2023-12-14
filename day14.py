@@ -1,10 +1,7 @@
 import os
 
-data = [list(row) for row in open(os.path.join("input-data-2023", "23-14.txt")).read().strip().split("\n")]
-roundedRocks = dict((col, [False for _ in range(len(data[0]))]) for col in range(len(data[0])))
-cubedRocks = dict((col, [False for _ in range(len(data[0]))]) for col in range(len(data[0])))
 
-def rotate(data):
+def rotateClockwise(data):
     rotatedData = [['X' for _ in range(len(data))] for _ in range(len(data[0]))]
     for i in range(len(data)):
         for j in range(len(data[0])):
@@ -13,10 +10,7 @@ def rotate(data):
 
 
 def pushUp(data):
-    load = 0
     for j in range(len(data[0])):
-        if data[0][j] == "O":
-            load += len(data)
         for i in range(1, len(data)):
             if data[i][j] != "O":
                 continue
@@ -26,8 +20,43 @@ def pushUp(data):
             pointer += 1
             data[i][j] = "."
             data[pointer][j] = "O"
-            load += len(data) - pointer
-    return load, data
+    return data
 
 
-print(pushUp(data))
+def getLoad(data):
+    load = 0
+    for j in range(len(data[0])):
+        for i in range(0, len(data)):
+            if data[i][j] == "O":
+                load += len(data) - i
+    return load
+
+
+def performCycle(data):
+    for _ in range(4):
+        data = pushUp(data)
+        data = rotateClockwise(data)
+    return data
+
+
+def updateCycleNumber(cache, data, cycle):
+    hashableData = tuple(tuple(row) for row in data)
+    if hashableData in cache:
+        cycleLength = cycle - cache[hashableData]
+        numberOfCycles = ((1000000000 - cycle) // cycleLength)
+        cycle += numberOfCycles * cycleLength
+    cache[hashableData] = cycle
+    return cycle
+
+
+def getResult():
+    data = [list(row) for row in open(os.path.join("input-data-2023", "23-14.txt")).read().strip().split("\n")]
+    cache = {}
+    cycle = 0
+    while cycle < 1000000000:
+        data = performCycle(data)
+        cycle = updateCycleNumber(cache, data, cycle + 1)
+    return getLoad(data)
+
+
+print(getResult())
