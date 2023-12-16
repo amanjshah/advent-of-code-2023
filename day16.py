@@ -16,19 +16,23 @@ def getEnergisedTiles(rowStart, colStart, dirStart):
             i, j, direction = queue.popleft()
             if (i, j, direction) not in seen and 0 <= i < len(data) and 0 <= j < len(data[0]):
                 seen.add((i, j, direction))
-                symbol = data[i][j]
-                if symbol == "." or (symbol == "-" and direction in "RL") or (symbol == "|" and direction in "UD"):
-                    di, dj = coordinates[direction]
-                    queue.append((i + di, j + dj, direction))
-                elif symbol in "-|":
-                    for newDirection in splitters[symbol]:
-                        di, dj = coordinates[newDirection]
-                        queue.append((i + di, j + dj, newDirection))
-                else:
-                    newDirection = mirrors[symbol][direction]
-                    di, dj = coordinates[newDirection]
-                    queue.append((i + di, j + dj, newDirection))
-    return len({(i, j) for (i, j, _) in seen})
+                addToQueue(i, j, direction, queue)
+    return len(set((i, j) for (i, j, _) in seen))
+
+
+def addToQueue(i, j, direction, queue):
+    symbol = data[i][j]
+    if symbol == "." or (symbol == "-" and direction in "RL") or (symbol == "|" and direction in "UD"):
+        di, dj = coordinates[direction]
+        queue.append((i + di, j + dj, direction))
+    elif symbol in "-|":
+        for newDirection in splitters[symbol]:
+            di, dj = coordinates[newDirection]
+            queue.append((i + di, j + dj, newDirection))
+    else:
+        newDirection = mirrors[symbol][direction]
+        di, dj = coordinates[newDirection]
+        queue.append((i + di, j + dj, newDirection))
 
 
 def getResult():
@@ -36,7 +40,7 @@ def getResult():
     for startingRow in range(len(data)):
         res = max(res, getEnergisedTiles(startingRow, 0, "R"))
         res = max(res, getEnergisedTiles(startingRow, len(data[0]) - 1, "L"))
-    for startingColumn in range(len(data)):
+    for startingColumn in range(len(data[0])):
         res = max(res, getEnergisedTiles(0, startingColumn, "D"))
         res = max(res, getEnergisedTiles(len(data) - 1, startingColumn, "U"))
     return res
