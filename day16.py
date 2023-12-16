@@ -12,11 +12,10 @@ def getEnergisedTiles(rowStart, colStart, dirStart):
     seen = set()
     queue = deque([(rowStart, colStart, dirStart)])
     while queue:
-        for _ in range(len(queue)):
-            i, j, direction = queue.popleft()
-            if (i, j, direction) not in seen and 0 <= i < len(data) and 0 <= j < len(data[0]):
-                seen.add((i, j, direction))
-                addToQueue(i, j, direction, queue)
+        i, j, direction = queue.popleft()
+        if (i, j, direction) not in seen and 0 <= i < len(data) and 0 <= j < len(data[0]):
+            seen.add((i, j, direction))
+            addToQueue(i, j, direction, queue)
     return len(set((i, j) for (i, j, _) in seen))
 
 
