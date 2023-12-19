@@ -40,8 +40,10 @@ def addToStack(key, ranges, stack, workflows):
             nextRanges[category] = (lowerBound, upperBound)
             stack.append((nextRanges, nextKey))
         if (greaterThan and prevBoundary <= newBoundary) or (not greaterThan and newBoundary <= prevBoundary):
+            # subsequent rules are only reached if the current rule evaluates as false
             ranges[category] = (prevBoundary, newBoundary) if greaterThan else (newBoundary, prevBoundary)
         else:
+            # if the current rule evaluates to true in all cases, then subsequent rules are never reached
             break
     else:
         stack.append((ranges, rules[-1]))
