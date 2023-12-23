@@ -10,9 +10,9 @@ def getBoxNumber(line, setterIdx):
     return boxNumber
 
 
-def dealWithDash(lenses, line, setterIdx):
+def dealWithDash(lenses, line):
     for (code, focalLength) in lenses:
-        if code == line[:setterIdx]:
+        if code == line[:-1]:
             lenses.remove((code, focalLength))
     return lenses
 
@@ -44,7 +44,7 @@ def updateBoxes(boxes, line):
     setterIdx = line.find("=")
     boxNumber = getBoxNumber(line, setterIdx)
     if setterIdx == -1:
-        boxes[boxNumber] = dealWithDash(boxes[boxNumber], line, setterIdx)
+        boxes[boxNumber] = dealWithDash(boxes[boxNumber], line)
     else:
         boxes[boxNumber] = dealWithEquals(boxes[boxNumber], line, setterIdx)
 
