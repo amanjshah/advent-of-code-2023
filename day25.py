@@ -7,9 +7,7 @@ def createGraph():
     data = [line.split(": ") for line in open(os.path.join("input-data-2023", "23-25.txt")).read().strip().split("\n")]
     graph = nx.Graph()
     for node, connectedNodes in data:
-        for connectedNode in (connectedNodes.split()):
-            graph.add_edge(node, connectedNode)
-            graph.add_edge(connectedNode, node)
+        graph.add_edges_from((node, connectedNode) for connectedNode in connectedNodes.split())
     return graph
 
 
