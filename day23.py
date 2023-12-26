@@ -27,12 +27,12 @@ def addBranchToGraph(branch, branches, graph):
         i, j, steps = stack.pop()
         if steps and (i, j) in branches:
             graph[branch][(i, j)] = steps
-            continue
-        for di, dj in [(0, 1), (1, 0), (0, -1), (-1, 0)]:
-            nextI, nextJ = i + di, j + dj
-            if validateCoordinates(nextI, nextJ, cache):
-                stack.append((nextI, nextJ, steps + 1))
-                cache.add((nextI, nextJ))
+        else:
+            for di, dj in (0, 1), (1, 0), (0, -1), (-1, 0):
+                nextI, nextJ = i + di, j + dj
+                if validateCoordinates(nextI, nextJ, cache):
+                    stack.append((nextI, nextJ, steps + 1))
+                    cache.add((nextI, nextJ))
 
 
 def findLongestPath(graph, start, end):
